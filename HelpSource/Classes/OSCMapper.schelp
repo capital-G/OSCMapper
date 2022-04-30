@@ -1,0 +1,110 @@
+TITLE:: OSCMapper
+summary:: An abstraction layer for OSC controllers
+categories:: OSC Controllers
+related:: Classes/Bus, Classes/OSCdef, Classes/Ndef, Classes/Pdefn
+
+DESCRIPTION::
+An abstraction layer for OSC controllers.
+
+
+First code examples:
+
+code::
+
+// turn OSC Mapper into learning mode
+OSCMapper.learn;
+// move (all) controllers
+// when finished create a new controller
+m = OSCMapper.finishLearn(\myController);
+
+// now we can simply use the controller values in an ndef
+(
+Ndef(\mySound, {
+	var sig = Saw.ar(LFDNoise1.kr(2.5!2).exprange(400, 410));
+	sig = sig * m['/1/fader1'].asNdef;
+	sig;
+}).play;
+)
+Ndef(\mySound).clear(1.0);
+
+// or as a bus
+(
+a = SynthDef(\mySound, {|out|
+	Out.ar(out, RLPF.ar(WhiteNoise.ar(0.2), (\ffreq.kr(0.5)*400)+400, 0.01));
+}).play;
+)
+
+a.map(\ffreq, m['/1/fader1'].asBus);
+
+a.free;
+
+// or in a Pattern
+(
+Pdef(\myPattern, Pbind(
+	\instrument, \default,
+	\dur, m['/1/fader1'].asPdefn + 0.1,
+	\degree, Pxrand((0..10), inf),
+)).play;
+)
+
+Pdef(\myPattern).clear;
+
+// or add a custom callback
+m['/1/fader1'].callback = {|v| v.postln;}
+
+// or change the values domain
+m['/1/fader1'].transformer = linlin(_, 0.0, 1.0, 100.0, 400.0);
+
+// and remove the callback
+m['/1/fader1'].callback = {};
+::
+
+CLASSMETHODS::
+
+METHOD:: finishLearn
+argument:: name
+
+METHOD:: mixer2
+
+METHOD:: isLearning
+
+METHOD:: new
+argument:: name
+argument:: layout
+
+METHOD:: initListener
+
+METHOD:: learnCapture
+
+METHOD:: prCreateOscListener
+
+METHOD:: listenOnOSC
+argument:: msg
+
+METHOD:: echo
+argument:: echoBool
+
+METHOD:: initClass
+
+METHOD:: learn
+
+
+INSTANCEMETHODS::
+
+METHOD:: clearAll
+
+METHOD:: l
+
+METHOD:: init
+
+METHOD:: at
+argument:: address
+
+METHOD:: clear
+
+
+EXAMPLES::
+
+code::
+_some_example_code_
+::

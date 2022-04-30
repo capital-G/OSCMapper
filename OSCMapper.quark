@@ -1,0 +1,10 @@
+(
+  name: "OSCMapper",
+  summary: "Abstraction layer for OSC controllers.",
+  version: "0.1.0",
+  schelp: "OSCMapper",
+  url: "https://github.com/capital-G/OSCMapper",
+  license: "GPL-2.0",
+  copyright: "Dennis Scheiba, 2022",
+  organization: "Robert Schumann Hochschule Düsseldorf"
+)
