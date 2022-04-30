@@ -3,7 +3,7 @@ OSCMapperElement {
 	var <>defaultValue;
 	var <>transformer;
 	var <>callback;
-	var <>lag;
+	var <lag;
 
 	// private stuff
 	var <name;
@@ -37,14 +37,21 @@ OSCMapperElement {
 		name = "OSCMapper_%".format(address);
 	}
 
+	lag_ { |newLag|
+		lag = newLag;
+		if(ndef.notNil, {
+			ndef.set(\lag, lag);
+		});
+	}
+
 	getValue {
 		^value;
 	}
 
 	asNdef {
-		// make lag update?
-		// but probably via setter method
-		ndef = ndef ? Ndef(name.asSymbol, {\val.kr(0.0, lag: lag)});
+		ndef = ndef ? Ndef(name.asSymbol, {
+			\val.kr(0.0, lag: \lag.kr(lag))
+		});
 		^ndef;
 	}
 
