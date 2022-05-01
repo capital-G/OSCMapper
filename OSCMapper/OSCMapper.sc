@@ -170,14 +170,14 @@ OSCMapperXY {
 
 	initXY {
 		x = OSCMapperFader(
-			altName: "%_x".format(altName).asSymbol,
+			altName: altName.isNil.if({nil}, {"%_x".format(altName).asSymbol}),
 			defaultValue: defaultValueX,
 			transformer: transformerX,
 			callback: callbackX,
 			lag: lagX,
 		);
 		y = OSCMapperFader(
-			altName: "%_y".format(altName).asSymbol,
+			altName: altName.isNil.if({nil}, {"%_y".format(altName).asSymbol}),
 			defaultValue: defaultValueY,
 			transformer: transformerY,
 			callback: callbackY,
@@ -192,6 +192,95 @@ OSCMapperXY {
 
 	printOn { | stream |
 		stream << "OSCMapperXY(altName: " << altName << ")";
+	}
+}
+
+OSCMapperAccXYZ {
+	var <altName;
+	var defaultValueX;
+	var defaultValueY;
+	var defaultValueZ;
+	var transformerX;
+	var transformerY;
+	var transformerZ;
+	var callbackX;
+	var callbackY;
+	var callbackZ;
+	var lagX;
+	var lagY;
+	var lagZ;
+
+	var <x;
+	var <y;
+	var <z;
+	var <>address;
+
+	*new { |
+		altName,
+		defaultValueX,
+		defaultValueY,
+		defaultValueZ,
+		transformerX,
+		transformerY,
+		transformerZ,
+		callbackX,
+		callbackY,
+		callbackZ,
+		lagX=0.2,
+		lagY=0.2,
+		lagZ=0.2
+		|
+		^super.newCopyArgs(
+			altName,
+			defaultValueX,
+			defaultValueY,
+			defaultValueZ,
+			transformerX,
+			transformerY,
+			transformerZ,
+			callbackX,
+			callbackY,
+			callbackZ,
+			lagX,
+			lagY,
+			lagZ,
+		).initAccXYZ;
+	}
+
+	initAccXYZ {
+		x = OSCMapperFader(
+			altName: altName.isNil.if({nil}, {"%_x".format(altName).asSymbol}),
+			defaultValue: defaultValueX,
+			transformer: transformerX,
+			callback: callbackX,
+			lag: lagX,
+		);
+
+		y = OSCMapperFader(
+			altName: altName.isNil.if({nil}, {"%_y".format(altName).asSymbol}),
+			defaultValue: defaultValueY,
+			transformer: transformerY,
+			callback: callbackY,
+			lag: lagY,
+		);
+
+		z = OSCMapperFader(
+			altName: altName.isNil.if({nil}, {"%_z".format(altName).asSymbol}),
+			defaultValue: defaultValueZ,
+			transformer: transformerZ,
+			callback: callbackZ,
+			lag: lagZ,
+		);
+	}
+
+	update { |...newValues|
+		x.update(newValues[0]);
+		y.update(newValues[1]);
+		z.update(newValues[2]);
+	}
+
+	printOn { | stream |
+		stream << "OSCMapperAccXYZ(altName: " << altName << ")";
 	}
 }
 
@@ -316,6 +405,7 @@ OSCMapper {
 			var values = rawValues.asArray.flatten(1).asSet;
 			var t = case
 			{ values == Set[] } { \page }
+			{ address.asSymbol == '/accxyz' } { OSCMapperAccXYZ() }
 			{ values == Set[0.0, 1.0]} {
 				if(address.asString.contains("toggle"), {
 					// this is a toggle which is 1 or 0
