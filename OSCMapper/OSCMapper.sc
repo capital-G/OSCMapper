@@ -299,9 +299,12 @@ OSCMapper {
 	classvar <>learnCapture;
 	classvar <all;
 
-	*new { |name, layout, port=57120|
+	*new { |name, layout, port|
 		var res = all[name.asSymbol];
+
+		if(port.notNil, {
 		thisProcess.openUDPPort(port);
+		});
 
 		if(res.notNil, {
 			if(layout.notNil, {
@@ -342,7 +345,6 @@ OSCMapper {
 
 
 	init {
-		thisProcess.openUDPPort(port);
 		OSCMapper.initListener;
 
 		l = ();
