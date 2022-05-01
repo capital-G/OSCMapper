@@ -286,9 +286,11 @@ OSCMapperAccXYZ {
 
 OSCMapper {
 	var name;
-	var layout;
+	var initLayout;
 	var port;
+
 	var l;
+	var <layout;
 
 	classvar oscListener;
 	classvar listenerActive;
@@ -299,19 +301,21 @@ OSCMapper {
 
 	*new { |name, layout, port=57120|
 		var res = all[name.asSymbol];
+		thisProcess.openUDPPort(port);
+
 		if(res.notNil, {
 			if(layout.notNil, {
 				res.layout = layout;
 			});
-			thisProcess.openUDPPort(port);
 		}, {
 			res = super.newCopyArgs(
 				name,
 				layout,
 				port,
 			).init;
+			all[name.asSymbol] = res;
 		});
-		all[name.asSymbol] = res;
+
 		^res;
 	}
 
@@ -326,8 +330,7 @@ OSCMapper {
 
 	*initListener {
 		if(listenerActive.not, {
-			"add osc listener now".postln;
-			// todo make this a lambda funcion?
+			"Init OSC listener for OSCMapper".postln;
 			thisProcess.addOSCRecvFunc({|msg|
 				OSCMapper.listenOnOSC(msg)
 			});
@@ -343,8 +346,22 @@ OSCMapper {
 		OSCMapper.initListener;
 
 		l = ();
+		this.layout_(initLayout);
+	}
 
-		layout.pairsDo({|address, t|
+	at {|address|
+		^l[address];
+	}
+
+	layout_ { |newLayout|
+		// remove old listeners
+		l.pairsDo({|address, element|
+			oscListener[address.asSymbol] = nil;
+		});
+
+		// set new listeners
+		l = ();
+		newLayout.pairsDo({|address, t|
 			t.address = address;
 			oscListener[address.asSymbol] = t;
 			l[address.asSymbol] = t;
@@ -353,10 +370,7 @@ OSCMapper {
 				l[t.altName] = t;
 			});
 		});
-	}
-
-	at {|address|
-		^l[address];
+		layout = newLayout;
 	}
 
 
