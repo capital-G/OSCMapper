@@ -190,6 +190,9 @@ OSCMapperXY {
 		y.update(newValues[1]);
 	}
 
+	printOn { | stream |
+		stream << "OSCMapperXY(altName: " << altName << ")";
+	}
 }
 
 OSCMapper {
