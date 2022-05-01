@@ -446,9 +446,19 @@ OSCMapper {
 		^this.new(name, r);
 	}
 
-	clear {}
+	clear {
+		l.pairsDo({|address, element|
+			oscListener[address.asSymbol] = nil;
+		});
+		all[name.asSymbol] = nil;
+		l = ();
+	}
 
-	clearAll {}
+	*clearAll {
+		all.pairsDo({|name, mapper|
+			mapper.clear;
+		});
+	}
 
 	*prCreateOscListener {
 		thisProcess.addOSCRecvFunc(OSCMapper.oscListener);
