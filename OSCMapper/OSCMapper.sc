@@ -139,8 +139,58 @@ OSCMapperPush : OSCMapperElement {
 	}
 }
 
-// TODO
-OSCMapperXY : OSCMapperElement {}
+OSCMapperXY {
+	var <altName;
+	var defaultValueX;
+	var defaultValueY;
+	var transformerX;
+	var transformerY;
+	var callbackX;
+	var callbackY;
+	var lagX;
+	var lagY;
+
+	var <x;
+	var <y;
+	var <>address;
+
+	*new { |altName, defaultValueX=0.0, defaultValueY=0.0 transformerX, transformerY, callbackX, callbackY, lagX=0.2, lagY=0.2|
+		^super.newCopyArgs(
+			altName,
+			defaultValueX,
+			defaultValueY,
+			transformerX,
+			transformerY,
+			callbackX,
+			callbackY,
+			lagX,
+			lagY,
+		).initXY;
+	}
+
+	initXY {
+		x = OSCMapperFader(
+			altName: "%_x".format(altName).asSymbol,
+			defaultValue: defaultValueX,
+			transformer: transformerX,
+			callback: callbackX,
+			lag: lagX,
+		);
+		y = OSCMapperFader(
+			altName: "%_y".format(altName).asSymbol,
+			defaultValue: defaultValueY,
+			transformer: transformerY,
+			callback: callbackY,
+			lag: lagY,
+		);
+	}
+
+	update {|...newValues|
+		x.update(newValues[0]);
+		y.update(newValues[1]);
+	}
+
+}
 
 OSCMapper {
 	var name;
@@ -273,7 +323,7 @@ OSCMapper {
 				});
 			}
 			{ (values == Set[1.0]).or(values == Set[0.0]) } { OSCMapperPush()}
-			{ values.asArray[0].size > 1 } { OSCMapperXY() }
+			{ rawValues.asArray[0].size > 1 } { OSCMapperXY() }
 			{ values.asArray.size > 1 } { OSCMapperFader() }
 			{ true } { \unknown };
 
