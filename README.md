@@ -14,6 +14,10 @@ thisProcess.recompile;
 
 ## Quickstart
 
+### Learn OSC commands
+
+Based on the input OSCMapper receives it will try to guess what kind of interface the address represents.
+
 ```supercollider
 // turn OSC Mapper into learning mode
 OSCMapper.learn;
@@ -30,6 +34,34 @@ Ndef(\mySound, {
 }).play;
 )
 Ndef(\mySound).clear(1.0);
+```
+
+### Static layout
+
+If you want to establish a fixed layout you can also provide a static layout.
+
+```supercollider
+(
+o = OSCMapper(\myLayout, (
+    '/1/fader1': OSCMapperFader(
+        altName: \fader1,
+        defaultValue: 0.5,
+        transformer: linlin(_, 0.0, 1.0, 0.5, 10.0),
+        callback: {|v| ["received a value", v].postln;},
+        lag: 0.5,
+    ),
+    '/1/xy1': OSCMapperXY(
+        altName: \touchPanel
+    ),
+));
+
+Ndef(\mySound, {
+    SinOscFB.ar(
+        freq: LFDNoise1.kr(o[\fader1].asNdef!2).exprange(200, 400),
+        feedback: o[\touchPanel].x.asNdef,
+    ) * o[\touchPanel].y.asNdef;
+}).play;
+)
 ```
 
 ## License
