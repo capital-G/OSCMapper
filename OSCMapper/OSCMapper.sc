@@ -287,6 +287,7 @@ OSCMapperAccXYZ {
 OSCMapper {
 	var name;
 	var layout;
+	var port;
 	var <l;
 
 	classvar oscListener;
@@ -295,10 +296,11 @@ OSCMapper {
 	classvar <>isLearning;
 	classvar <>learnCapture;
 
-	*new { |name, layout|
+	*new { |name, layout, port=57120|
 		^super.newCopyArgs(
 			name,
 			layout,
+			port,
 		).init;
 	}
 
@@ -325,6 +327,7 @@ OSCMapper {
 
 
 	init {
+		thisProcess.openUDPPort(port);
 		OSCMapper.initListener;
 
 		l = ();
