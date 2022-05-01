@@ -288,20 +288,31 @@ OSCMapper {
 	var name;
 	var layout;
 	var port;
-	var <l;
+	var l;
 
 	classvar oscListener;
 	classvar listenerActive;
 	classvar printAddress;
 	classvar <>isLearning;
 	classvar <>learnCapture;
+	classvar <all;
 
 	*new { |name, layout, port=57120|
-		^super.newCopyArgs(
-			name,
-			layout,
-			port,
-		).init;
+		var res = all[name.asSymbol];
+		if(res.notNil, {
+			if(layout.notNil, {
+				res.layout = layout;
+			});
+			thisProcess.openUDPPort(port);
+		}, {
+			res = super.newCopyArgs(
+				name,
+				layout,
+				port,
+			).init;
+		});
+		all[name.asSymbol] = res;
+		^res;
 	}
 
 	*initClass {
@@ -310,6 +321,7 @@ OSCMapper {
 		listenerActive = false;
 		isLearning = false;
 		learnCapture = ();
+		all = ();
 	}
 
 	*initListener {
