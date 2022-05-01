@@ -379,6 +379,10 @@ OSCMapper {
 
 		var addressesToIgnore = [
 			"/status",
+			"/n_",
+			"/synced",
+			"/d_",
+			"/done",
 		];
 		if(addressesToIgnore.any({|a|
 			address.asString.beginsWith(a)
