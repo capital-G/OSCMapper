@@ -64,6 +64,26 @@ Ndef(\mySound, {
 )
 ```
 
+### Use a preset
+
+If you use e.g. TouchOSC you can also easily use existing presets like this
+
+```supercollider
+o = OSCMapper.mix2;
+
+(
+Ndef(\mySound, {
+    SinOscFB.ar(
+        freq: LFDNoise1.kr([
+            o['/3/xy2'].x.asNdef,
+            o['/3/xy2'].y.asNdef 
+        ]).exprange(200, 600),
+        feedback: o['/3/xy1'].x.asNdef,
+    ) * o['/3/xy1'].y.asNdef;
+}).play;
+)
+```
+
 ## License
 
 GPL-2.0
