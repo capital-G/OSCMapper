@@ -152,7 +152,7 @@ OSCMapperXY {
 
 	var <x;
 	var <y;
-	var <>address;
+	var <address;
 
 	*new { |altName, defaultValueX=0.0, defaultValueY=0.0 transformerX, transformerY, callbackX, callbackY, lagX=0.2, lagY=0.2|
 		^super.newCopyArgs(
@@ -190,6 +190,12 @@ OSCMapperXY {
 		y.update(newValues[1]);
 	}
 
+	address_ { |newAddress|
+		address = newAddress;
+		x.address = "%_x".format(address).asSymbol;
+		y.address = "%_y".format(address).asSymbol;
+	}
+
 	printOn { | stream |
 		stream << "OSCMapperXY(altName: " << altName << ")";
 	}
@@ -213,7 +219,7 @@ OSCMapperAccXYZ {
 	var <x;
 	var <y;
 	var <z;
-	var <>address;
+	var <address;
 
 	*new { |
 		altName,
@@ -277,6 +283,13 @@ OSCMapperAccXYZ {
 		x.update(newValues[0]);
 		y.update(newValues[1]);
 		z.update(newValues[2]);
+	}
+
+	address_ { |newAddress|
+		address = newAddress;
+		x.address = "%_x".format(address).asSymbol;
+		y.address = "%_y".format(address).asSymbol;
+		z.address = "%_z".format(address).asSymbol;
 	}
 
 	printOn { | stream |
