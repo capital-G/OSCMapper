@@ -44,10 +44,6 @@ OSCMapperElement {
 		});
 	}
 
-	getValue {
-		^value;
-	}
-
 	asNdef {
 		ndef = ndef ? Ndef(name.asSymbol, {
 			\val.kr(0.0, lag: \lag.kr(lag))

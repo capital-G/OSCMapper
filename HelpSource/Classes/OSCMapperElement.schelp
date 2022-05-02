@@ -1,0 +1,94 @@
+TITLE:: OSCMapperElement
+summary:: Base element for OSCMapper receivers
+categories:: OSCMapper
+related:: Classes/OSCMapper, Classes/OSCMapperFader, Classes/OSCMapperPush, Classes/OSCMapperXY, Classes/OSCMapperAccXYZ
+
+DESCRIPTION::
+Base element for receivers of OSC messages from link::Classes/OSCMapper::.
+Handles registration and transformation of the values.
+This should be handeled as an abstract class and the following classes should be used instead
+
+list::
+## link::Classes/OSCMapperFader:: For floating values
+## link::Classes/OSCMapperPush:: For binary values
+## link::Classes/OSCMapperXY:: For 2 dimensional link::Classes/OSCMapperFader::
+## link::Classes/OSCMapperAccXYZ:: For 3 dimensional sensor data
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+argument:: altName
+Alternatev name under which the element can also be accessed from via the link::Classes/OSCMapper::
+argument:: defaultValue
+The default value which will be put out as long as no message was received.
+argument:: transformer
+An optional function which will transform the received values.
+code::
+// add +20 to all values
+{|v| v+20}
+
+// use linlin to map [0, 1] to [20, 200]
+linlin(_, 0.0, 1.0, 20.0, 200.0);
+::
+argument:: callback
+A function which will be called.
+First argument is the received value.
+code::
+{|v| "received %".format(v).postln}
+::
+argument:: lag
+Will be used as a smoothing on the Ndef.
+
+
+INSTANCEMETHODS::
+
+PRIVATE:: update
+
+METHOD:: asNdef
+
+Returns the values as link::Classes/Ndef::, see link::Classes/OSCMapper#Examples:: for usage.
+
+METHOD:: asBus
+
+Returns the values in a link::Classes/Bus::, see link::Classes/OSCMapper#Examples:: for usage.
+
+METHOD:: asPdefn
+
+Returns the values as link::Classes/Pdefn::, see link::Classes/OSCMapper#Examples:: for usage.
+
+
+METHOD:: value
+
+Returns latest received value.
+
+METHOD:: transformer
+
+See link::Classes/OSCMapperElement#*new::
+
+PRIVATE:: initTouchElement
+
+METHOD:: callback
+
+See link::Classes/OSCMapperElement#*new::
+
+PRIVATE:: altName
+
+PRIVATE:: ndef
+
+PRIVATE:: defaultValue
+
+PRIVATE:: name
+
+PRIVATE:: lag
+
+PRIVATE:: pdefn
+
+PRIVATE:: address
+
+PRIVATE:: bus
+
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.

@@ -1,7 +1,7 @@
 TITLE:: OSCMapper
 summary:: An abstraction layer for OSC controllers
-categories:: OSC Controllers
-related:: Classes/Bus, Classes/OSCdef, Classes/Ndef, Classes/Pdefn
+categories:: OSCMapper
+related:: Classes/OSCMapperElement, Classes/OSCMapperFader, Classes/OSCMapperPush, Classes/OSCMapperXY, Classes/OSCMapperAccXYZ, Classes/Bus, Classes/OSCdef, Classes/Ndef, Classes/Pdefn
 
 DESCRIPTION::
 
@@ -207,6 +207,18 @@ Removes any server resources and also any callbacks in the language.
 EXAMPLES::
 
 STRONG::Multitoggles as step sequencer::
+
+code::
+// TODO
+::
+
+STRONG::Activate ProxyChain::
+
+code::
+// TODO
+::
+
+STRONG::Play/Stop patterns::
 
 code::
 // TODO

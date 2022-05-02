@@ -10,6 +10,8 @@ Allows learning of controls and much more.
 Quarks.install("https://github.com/capital-G/OSCMapper.git");
 // restart the interpreter so the new classes are available
 thisProcess.recompile;
+// open documention
+HelpBrowser.openHelpFor("Classes/OSCMapper");
 ```
 
 ## Quickstart

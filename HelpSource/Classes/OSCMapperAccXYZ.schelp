@@ -1,0 +1,64 @@
+TITLE:: OSCMapperAccXYZ
+summary:: Receives tree dimensional sensor float values on OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapperFader, Classes/OSCMapper, Classes/OSCMapperElement
+
+DESCRIPTION::
+
+Makes the 3 dimensions from e.g. an accelerator sensor available as OSC receiver for an link::Class/OSCMapper::.
+
+code::
+o = OSCMapper(\controller, (
+	'/accxyz': OSCMapperXY(),
+));
+
+// access x via
+o['/accxyz'].x.value;
+// and y via
+o['/accxyz'].y.value;
+// and z via
+o['/accxyz'].z.value;
+::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement:: for more information.
+
+CLASSMETHODS::
+
+METHOD:: new
+argument:: altName
+argument:: defaultValueX
+argument:: defaultValueY
+argument:: defaultValueZ
+argument:: transformerX
+argument:: transformerY
+argument:: transformerZ
+argument:: callbackX
+argument:: callbackY
+argument:: callbackZ
+argument:: lagX
+argument:: lagY
+argument:: lagZ
+
+
+INSTANCEMETHODS::
+
+PRIVATE:: update
+
+PRIVATE:: address
+
+PRIVATE:: initAccXYZ
+
+METHOD:: x
+
+METHOD:: y
+
+METHOD:: z
+
+PRIVATE:: printOn
+
+PRIVATE:: altName
+
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.

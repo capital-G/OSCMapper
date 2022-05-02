@@ -1,0 +1,61 @@
+TITLE:: OSCMapperXY
+summary:: Receives two dimensional float values on OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapperFader, Classes/OSCMapper, Classes/OSCMapperElement
+
+DESCRIPTION::
+
+Makes the two dimensions of the OSC address accessible via an link::Classes/Event:: with the keys code::x:: and code::y::.
+
+code::
+o = OSCMapper(\controller, (
+	'/3/xy1': OSCMapperXY(),
+));
+
+// access x via
+o['/3/xy1'].x.value;
+// and y via
+o['/3/xy1'].y.value;
+::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement:: for more information.
+
+CLASSMETHODS::
+
+METHOD:: new
+See See link::Classes/OSCMapper#*new::
+argument:: altName
+argument:: defaultValueX
+argument:: defaultValueY
+argument:: transformerX
+argument:: transformerY
+argument:: callbackX
+argument:: callbackY
+argument:: lagX
+argument:: lagY
+
+
+INSTANCEMETHODS::
+
+METHOD:: x
+
+First dimension
+
+PRIVATE:: initXY
+
+PRIVATE:: update
+
+METHOD:: y
+
+Second dimension
+
+PRIVATE:: printOn
+
+PRIVATE:: address
+
+PRIVATE:: altName
+
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.

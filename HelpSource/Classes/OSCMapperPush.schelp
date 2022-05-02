@@ -1,0 +1,37 @@
+TITLE:: OSCMapperPush
+summary:: Receives binary values on OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapper, Classes/OSCMapperElement
+
+DESCRIPTION::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement:: for more information.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+argument:: altName
+See link::Classes/OSCMapper#*new::
+argument:: pressCallback
+A function which will be called when the button is pressed down (from 0->1)
+argument:: releaseCallback
+A function which will be called when the button is released (from 1->0)
+
+
+INSTANCEMETHODS::
+
+PRIVATE:: initPush
+
+METHOD:: onRelease
+argument:: callback
+
+PRIVATE:: printOn
+
+METHOD:: onPress
+argument:: callback
+
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.

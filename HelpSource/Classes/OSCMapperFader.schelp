@@ -1,0 +1,20 @@
+TITLE:: OSCMapperFader
+summary:: Receives float values on OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapper, Classes/OSCMapperElement
+
+DESCRIPTION::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement::.
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+PRIVATE:: printOn
+
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.
