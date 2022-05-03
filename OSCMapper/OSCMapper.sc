@@ -296,12 +296,10 @@ OSCMapperAccXYZ {
 OSCMapper {
 	var name;
 	var initLayout;
-	var port;
+	var <port;
 
-	var l;
 	var <layout;
 
-	classvar oscListener;
 	classvar listenerActive;
 	classvar printAddress;
 	classvar <>isLearning;
@@ -310,16 +308,12 @@ OSCMapper {
 
 	*new { |name, layout, port|
 		var res = all[name.asSymbol];
-
-		if(port.notNil, {
-			thisProcess.openUDPPort(port);
-		});
-
 		if(res.notNil, {
 			if(layout.notNil, {
 				res.layout = layout;
 			});
 		}, {
+			if(port.notNil, {thisProcess.openUDPPort(port)});
 			res = super.newCopyArgs(
 				name,
 				layout,
@@ -332,7 +326,6 @@ OSCMapper {
 	}
 
 	*initClass {
-		oscListener = ();
 		printAddress = false;
 		listenerActive = false;
 		isLearning = false;
@@ -343,8 +336,8 @@ OSCMapper {
 	*initListener {
 		if(listenerActive.not, {
 			"Init OSC listener for OSCMapper".postln;
-			thisProcess.addOSCRecvFunc({|msg|
-				OSCMapper.listenOnOSC(msg)
+			thisProcess.addOSCRecvFunc({|msg, time, replyAddr, recvPort|
+				OSCMapper.listenOnOSC(msg, time, replyAddr, recvPort);
 			});
 			listenerActive = true;
 		});
@@ -378,37 +371,39 @@ OSCMapper {
 
 	init {
 		OSCMapper.initListener;
-
-		l = ();
+		layout = layout ? ();
 		this.layout_(initLayout);
 	}
 
 	at {|address|
-		^l[address];
+		var res;
+		address = address.asSymbol;
+
+		res = layout[address];
+		// maybe the address is an alternative name?
+		if(res.isNil, {
+			layout.pairsDo({|addr, element|
+				if(address == element.altName.asSymbol, {
+					res = element;
+				});
+			});
+		});
+		^res;
 	}
 
 	layout_ { |newLayout|
-		// remove old listeners
-		l.pairsDo({|address, element|
-			oscListener[address.asSymbol] = nil;
-		});
-
-		// set new listeners
-		l = ();
 		newLayout.pairsDo({|address, t|
+			address = address.asSymbol;
+			// set the address within the mapper element
+			// as this is necessary to generate
+			// an unique name for e.g. an ndef
 			t.address = address;
-			oscListener[address.asSymbol] = t;
-			l[address.asSymbol] = t;
-			// also add the controller under its alternative name if provided
-			if(t.altName.notNil, {
-				l[t.altName] = t;
-			});
 		});
 		layout = newLayout;
 	}
 
 
-	*listenOnOSC {|msg|
+	*listenOnOSC {|msg, time, replyAddr, recvPort|
 		var address = msg[0].asSymbol;
 
 		var addressesToIgnore = [
@@ -435,9 +430,18 @@ OSCMapper {
 		});
 
 		// run callbacks for address
-		oscListener.pairsDo({|address, element|
+		all.pairsDo({|name, mapper|
+			var portMatch = if(mapper.port.isNil, {
+				true;
+			}, {
+				recvPort == mapper.port;
+			});
+			if(portMatch, {
+				mapper.layout.pairsDo({|address, element|
 			if(msg[0].asSymbol == address.asSymbol, {
 				element.update(*msg[1..]);
+					});
+				});
 			});
 		});
 	}
@@ -499,11 +503,13 @@ OSCMapper {
 	}
 
 	clear {
+		/*
 		l.pairsDo({|address, element|
 			oscListener[address.asSymbol] = nil;
 		});
+		*/
 		all[name.asSymbol] = nil;
-		l = ();
+		layout = ();
 	}
 
 	*clearAll {

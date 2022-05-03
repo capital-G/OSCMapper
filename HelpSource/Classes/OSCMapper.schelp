@@ -197,7 +197,19 @@ The address or altname given.
 
 METHOD:: layout
 Allows to access and update the given layout.
-Note that you can only update the whole dictionary at once, so in case of incremental updates you need to take care of this for yourself.
+Note that you can only update the whole link::Classes/Event:: at once, so in case of incremental updates you need to take care of this for yourself.
+link::Classes/Ndef:: are more likely to survive an update as their address is deterministic, if you rely on busses it is update to increment the layout like
+
+code::
+// create some OSCMapper
+o = OSCMapper.mix2;
+// copy the layout
+l = o.layout;
+// add something to the copied layout
+o['/my/custom/address'] = OSCMapperFader();
+// overwrite the layout with our modified version
+o.layout = l;
+::
 
 METHOD:: clear
 
