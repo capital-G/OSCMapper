@@ -1,5 +1,7 @@
 # OSC Mapper
 
+![OSC Mapper logo](logo.png)
+
 An abstraction layer for OSC controllers and SuperCollider.
 Allows learning of controls and much more.
 
