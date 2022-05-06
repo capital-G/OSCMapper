@@ -361,6 +361,7 @@ OSCMapper {
 		(1..5).do({|i| l["/1/fader%".format(i).asSymbol] = OSCMapperFader()});
 		(1..16).do({|i| l["/1/toggle%".format(i).asSymbol] = OSCMapperPush()});
 		(1..12).do({|i| l["/1/push%".format(i).asSymbol] = OSCMapperPush()});
+		(1..2).do({|i| l["/1/xy%".format(i).asSymbol] = OSCMapperXY()});
 		(1..2).do({|i| (1..5).do({|j| (1..5).do({|k| l["/1/multitoggle%/%/%".format(i, j, k).asSymbol] = OSCMapperPush() }) })});
 		(1..2).do({|i| (1..3).do({|j| l["/1/multitoggle3/%/%".format(i, j).asSymbol] = OSCMapperPush() }) });
 		(1..2).do({|i| (1..16).do({|j| l["/2/multifader%/%".format(i, j).asSymbol] = OSCMapperFader()})});
