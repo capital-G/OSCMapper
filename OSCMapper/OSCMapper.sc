@@ -408,6 +408,7 @@ OSCMapper {
 		var address = msg[0].asSymbol;
 
 		var addressesToIgnore = [
+			"/localhost",
 			"/status",
 			"/n_",
 			"/synced",
