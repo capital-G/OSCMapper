@@ -346,9 +346,9 @@ OSCMapper {
 	*mix2 {|name = \mix2, port|
 		var l = ();
 		(1..3).do({|i| l["/1/fader%".format(i).asSymbol] = OSCMapperFader()});
-		(1..4).do({|i| l["/1/push%".format(i).asSymbol] = OSCMapperFader()});
+		(1..4).do({|i| l["/1/push%".format(i).asSymbol] = OSCMapperPush()});
 		(1..6).do({|i| l["/1/rotary%".format(i).asSymbol] = OSCMapperFader()});
-		(1..4).do({|i| l["/1/toggle%".format(i).asSymbol] = OSCMapperFader()});
+		(1..4).do({|i| l["/1/toggle%".format(i).asSymbol] = OSCMapperPush()});
 		(1..2).do({|i| (1..16).do({|j| l["/2/multifader%/%".format(i, j).asSymbol] = OSCMapperFader()})});
 		(1..2).do({|i| l["/3/xy%".format(i).asSymbol] = OSCMapperXY()});
 		l['/accxyz'] = OSCMapperAccXYZ();
