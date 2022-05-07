@@ -30,6 +30,7 @@ LIST::
 ## link::Classes/OSCMapperPush:: for binary buttons
 ## link::Classes/OSCMapperXY:: for 2 dimensional faders
 ## link::Classes/OSCMapperAccXYZ:: for sensory data
+## link::Classes/OSCMapperArray:: for array data (not supported via learning)
 ::
 
 which all use link::Classes/OSCMapperElement:: as foundation.

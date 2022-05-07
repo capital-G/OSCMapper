@@ -1,0 +1,53 @@
+TITLE:: OSCMapperArray
+summary:: Receives an array of float values on a OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapper, Classes/OSCMapperElement, Classes/OSCMapperKeyValue
+
+DESCRIPTION::
+
+Allows to receive an array of OSC values and access them in array style, therefore
+
+code::
+(
+o = OSCMapper(\myLayout, layout: (
+	'/my': OSCMapperArray(),
+));
+)
+
+// send a message to ourselves
+NetAddr("localhost", NetAddr.langPort).sendMsg("/my", 4, 3, 2, 1, 0);
+
+// now access the elements via their index - .asNdef etc also works
+o['/my'][0].value
+
+// Please note that if the dimension of the received array changes we will rebuild everything internal,
+// so things like callbacks are not persistent
+
+o['/my'][0].callback = {|v| "received %".format(v).postln}
+
+NetAddr("localhost", NetAddr.langPort).sendMsg("/my", 4, 3, 2, 1, 0);
+
+// now change dimensions
+
+NetAddr("localhost", NetAddr.langPort).sendMsg("/my", 3, 2, 1, 0);
+
+// no callback b/c we initiated new OSCMapperFader for each array element
+::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement:: for further information.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+METHOD:: at
+argument:: index
+
+PRIVATE:: update
+
+EXAMPLES::
+
+
+See link::Classes/OSCMapper#Examples::.

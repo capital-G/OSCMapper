@@ -283,6 +283,32 @@ OSCMapperAccXYZ {
 	}
 }
 
+OSCMapperArray : OSCMapperElement {
+	var a;
+
+	at { |index|
+		^a[index];
+	}
+
+	update { |...newValues|
+		a = a ? [];
+		if(a.size != newValues.size, {
+			a = newValues.size.collect({|i|
+				var element = OSCMapperFader();
+				element.address = "%_%".format(address, i).asSymbol;
+				element;
+			});
+		});
+		newValues.do({|value, i|
+			a[i].update(value);
+		});
+	}
+
+	printOn { | stream |
+		stream << "OSCMapperArray(altName: " << altName << ")";
+	}
+}
+
 OSCMapper {
 	var name;
 	var initLayout;
