@@ -93,41 +93,31 @@ OSCMapperFader : OSCMapperElement {
 }
 
 OSCMapperPush : OSCMapperElement {
-	var pressCallback;
-	var releaseCallback;
+	var <>onPress;
+	var <>onRelease;
+	var <>onPush;
 
-	*new { |altName, pressCallback, releaseCallback|
+	*new { |altName, onPress, onRelease, onPush|
 		^super.newCopyArgs().initPush(
-			pressCallback,
-			releaseCallback,
+			onPress,
+			onRelease,
+			onPush,
 		);
 	}
 
-	initPush {|pressCallback_, releaseCallback_|
+	initPush {|pressCallback_, releaseCallback_, pushCallback_|
 		this.initTouchElement();
 
-		// copy elements
-		pressCallback = pressCallback_;
-		releaseCallback = releaseCallback_;
-
-		if(pressCallback.notNil, {
-			this.onPress(pressCallback)
-		});
-		if(releaseCallback.notNil, {
-			this.onRelease(releaseCallback)
-		});
+		onPress = pressCallback_ ? {};
+		onRelease = releaseCallback_ ? {};
+		onPush = pushCallback_ ? {};
+		prCallbacks = prCallbacks ++ [{|v| this.checkPushCallbacks(v)}];
 	}
 
-	onPress { |callback |
-		prCallbacks.add({|value|
-			if(value==1.0, callback);
-		});
-	}
-
-	onRelease { |callback|
-		prCallbacks.add({|value|
-			if(value==0.0, callback)
-		});
+	checkPushCallbacks {|value|
+		if(value == 1.0, {this.onPress.value(value)});
+		if(value == 0.0, {this.onRelease.value(value)});
+		this.onPush.value(value);
 	}
 
 	printOn { | stream |
