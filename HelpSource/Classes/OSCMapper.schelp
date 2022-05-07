@@ -119,6 +119,8 @@ code::
 o[\fader1].value;
 ::
 
+See EMPHASIS::How to use the OSC values:: above for further infos.
+
 STRONG::Using a preset::
 
 The presets from TouchOSC are already provided and can be simply loaded via
@@ -127,6 +129,51 @@ code::
 o = OSCMapper.mix2(name: \controller);
 
 o['/1/fader1'].value;
+::
+
+See EMPHASIS::How to use the OSC values:: above for further infos.
+
+STRONG::Using def style access::
+
+Each OSCMapper needs to have a unique name.
+This is for internal reasons (as each link::Classes/Ndef:: also needs a unique address) but also to make the access to the OSCMapper easier.
+
+code::
+o = OSCMapper(\my, layout: ('/1/fader1': OSCMapperFader()));
+
+// access it via variable
+o['/1/fader1'].value;
+
+// access it via def style
+OSCMapper(\my)['/1/fader1'].value;
+::
+
+STRONG::Updating a layout::
+
+Lets say you want to change or modify an existing layout.
+
+code::
+o = OSCMapper(\my, layout: ('/1/fader1': OSCMapperFader()));
+::
+
+Then we can add another address on the fly by modifying the existing layout
+
+code::
+o.layout['/1/fader2'] = OSCMapperFader();
+::
+
+And also modify the existing layout by adding a transformer or a callback.
+
+code::
+o['/1/fader2'].callback = {|v| "Got called: %".format(v).postln};
+
+o['/1/fader2'].transformer = linlin(_, 0.0, 1.0, 20.0, 400.0);
+::
+
+and also remove an existing element
+
+code::
+o.layout['/1/fader2'] = nil;
 ::
 
 CLASSMETHODS::
@@ -201,19 +248,7 @@ The address or altname given.
 
 METHOD:: layout
 Allows to access and update the given layout.
-Note that you can only update the whole link::Classes/Event:: at once, so in case of incremental updates you need to take care of this for yourself.
-link::Classes/Ndef:: are more likely to survive an update as their address is deterministic, if you rely on busses it is update to increment the layout like
-
-code::
-// create some OSCMapper
-o = OSCMapper.mix2;
-// copy the layout
-l = o.layout;
-// add something to the copied layout
-o['/my/custom/address'] = OSCMapperFader();
-// overwrite the layout with our modified version
-o.layout = l;
-::
+See EMPHASIS::Updating a layout:: above on how to use it.
 
 METHOD:: clear
 
