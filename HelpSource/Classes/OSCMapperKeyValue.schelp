@@ -1,0 +1,41 @@
+TITLE:: OSCMapperKeyValue
+summary:: Receives a pair of key, value in array format on an OSC address
+categories:: OSCMapper
+related:: Classes/OSCMapper, Classes/OSCMapperElement, Classes/OSCMapperArray
+
+DESCRIPTION::
+
+Allows to receive an array of format code::[k1, v1, k2, v2, ...]:: in OSC values and access them in link::Classes/Event:: style, therefore
+
+code::
+(
+o = OSCMapper(\myLayout, layout: (
+	'/my': OSCMapperKeyValue(),
+));
+)
+
+// send a message to ourselves
+NetAddr("localhost", NetAddr.langPort).sendMsg("/my", "foo", 42, "bar", 2);
+
+// now access the elements via their key - .asNdef etc also works
+o['/my']['foo'].value;
+
+o['/my']['bar'].value;
+::
+
+See link::Classes/OSCMapper:: and link::Classes/OSCMapperElement:: for further information.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+METHOD:: at
+argument:: key
+
+PRIVATE:: update
+
+EXAMPLES::
+
+See link::Classes/OSCMapper#Examples::.

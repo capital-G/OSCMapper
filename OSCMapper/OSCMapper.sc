@@ -283,6 +283,33 @@ OSCMapperAccXYZ {
 	}
 }
 
+OSCMapperKeyValue : OSCMapperElement {
+	var d;
+
+	at { |key|
+		^d[key.asSymbol];
+	}
+
+	update { |...newValues|
+		d = d ? ();
+		newValues.pairsDo({|key, value|
+			var element = d[key.asSymbol];
+			if(element.isNil, {
+				element = OSCMapperFader();
+				element.address = "%_%".format(address, key).asSymbol;
+				d[key.asSymbol] = element;
+				// necessary to update the proper element?
+				element = d[key.asSymbol];
+			});
+			element.update(value);
+		});
+	}
+
+	printOn { | stream |
+		stream << "OSCMapperKeyValue(altName: " << altName << ")";
+	}
+}
+
 OSCMapperArray : OSCMapperElement {
 	var a;
 
@@ -457,8 +484,8 @@ OSCMapper {
 			});
 			if(portMatch, {
 				mapper.layout.pairsDo({|address, element|
-			if(msg[0].asSymbol == address.asSymbol, {
-				element.update(*msg[1..]);
+					if(msg[0].asSymbol == address.asSymbol, {
+						element.update(*msg[1..]);
 					});
 				});
 			});

@@ -31,6 +31,7 @@ LIST::
 ## link::Classes/OSCMapperXY:: for 2 dimensional faders
 ## link::Classes/OSCMapperAccXYZ:: for sensory data
 ## link::Classes/OSCMapperArray:: for array data (not supported via learning)
+## link::Classes/OSCMapperKeyValue:: for array data in format code::[key1, value1, key2, value2, ...]:: (not supported via learning)
 ::
 
 which all use link::Classes/OSCMapperElement:: as foundation.
