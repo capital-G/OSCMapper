@@ -137,7 +137,9 @@ Should be unique as we also allow to access the instances in an link::Classes/Nd
 argument:: layout
 An link::Classes/Event:: where key is the OSC address and the value is a link::Classes/OSCMapperElement:: which accepts the value.
 argument:: port
-Defaults to link::Classes/NetAddr#*langPort:: and allows to listen on other ports as well if set.
+Defaults to nil which will listen to all ports entered in link::Classes/Main#-openPorts:: (which can be seen via code::thisProcess.openPorts:: which defaults to link::Classes/NetAddr#*langPort:: which defaults to 57120).
+If a port is set we will tell sclang to listen on this port as well and we restrict the created OSCMapper to the stated port number.
+This allows you to use multiple devices with the same layout by using different ports.
 
 METHOD:: learn
 Puts OSCMapper in capture mode.
@@ -220,18 +222,105 @@ EXAMPLES::
 
 STRONG::Multitoggles as step sequencer::
 
+The layout link::Classes/OSCMapper#*mix2iPad:: includes a code::5x5:: matrix which we can use as a 25 step sequencer.
+The OSC address for these is code::/1/multitoggleK/i/j:: where K is the K-th multitoggle, i the column and j the row (so maybe a bit unintuitive but thats how it is in the interface).
+
 code::
-// TODO
+(
+o = OSCMapper.mix2iPad;
+
+// create an array of [o['.../1/1'].asPdefn, o['.../1/2'].asPdefn, ...]
+t = (1..5).collect({|i|
+	(1..5).collect({|j|
+		o["/1/multitoggle1/%/%".format(j, i).asSymbol].asPdefn
+	})
+}).flatten;
+
+Pdef(\myPattern, Pbind(
+	\instrument, \default,
+	\dur, 0.125,
+	\degree, Pseq((0..5), inf),
+	// use the button values of 1/0 as amp values
+	\amp, Pseq(t, inf),
+)).play;
+)
+
+Pdef(\myPattern).stop;
+
+// modify the array creation to e.g. 1..4 to get a 16 step sequencer
 ::
 
-STRONG::Activate ProxyChain::
+STRONG::Activate a ProxyChain::
 
 code::
-// TODO
+// create a synthdef
+(
+SynthDef(\percSaw, {|out|
+	var sig = Saw.ar(\freq.kr(200.0));
+	var env = EnvGen.kr(Env.perc(
+		attackTime: \attackTime.kr(0.01),
+		releaseTime: \releaseTime.kr(0.1),
+	), doneAction: Done.freeSelf);
+	sig = Pan2.ar(sig*env, pos: \pos.kr(0.0)) * \amp.kr(0.2);
+	Out.ar(out, sig);
+}).add;
+
+// create a proxychain source
+ProxyChain.add3(
+	srcName: \delay,
+	source: \filter -> {|in| DelayC.ar(
+		in: (in*\preAmp.kr(1.0)).tanh,
+		maxdelaytime: 0.2,
+		delaytime: 0.2 * [1.0, \delayOffset.kr(0.9)];
+	).sum},
+	level: 1.0,
+);
+)
+
+// create the actual proxy chain
+ProxyChain(\p, [\delay], numChannels: 2).play.gui;
+
+// play a pattern through the proxy chain
+(
+Pdef(\myPattern, Pbind(
+	\instrument, \percSaw,
+	\dur, 0.125,
+	\degree, Pseq((0..5), inf),
+	\amp, 0.5,
+	\out, ProxyChain(\p).proxy.index,
+)).play;
+)
+
+// create our OSC mapper
+o = OSCMapper.mix2;
+
+// create a callbacks on our push
+(
+o['/1/toggle1'].onPress = {ProxyChain(\p).add(\delay, 0.5)};
+o['/1/toggle1'].onRelease = {ProxyChain(\p).remove(\delay)};
+)
+
+// modify a ProxyChain parameter via osc parameter
+o['/1/fader1'].callback = {|v| ProxyChain(\p).set(\delayOffset, v)};
+
+
+// clean up
+Pdef(\myPattern).clear;
 ::
 
 STRONG::Play/Stop patterns::
 
 code::
-// TODO
+(
+Pdef(\myPattern, Pbind(
+	\instrument, \default,
+	\degree, Pxrand((0..5), inf),
+	\dur, 0.25,
+));
+)
+
+(
+o['/1/toggle1'].onPress = {Pdef(\myPattern).play};
+o['/1/toggle1'].onRelease = {Pdef(\myPattern).stop};
+)
 ::
