@@ -79,8 +79,8 @@ OSCMapperElement {
 			Pdefn(name.asSymbol, value);
 		});
 
-		prCallbacks ++ [callback].do({|cb|
-			cb.(value);
+		(prCallbacks ++ [callback]).do({|cb|
+			cb.value(value);
 		});
 	}
 }
