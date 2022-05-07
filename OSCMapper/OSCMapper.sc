@@ -414,6 +414,7 @@ OSCMapper {
 			"/synced",
 			"/d_",
 			"/done",
+			"g_queryTree",
 		];
 		if(addressesToIgnore.any({|a|
 			address.asString.beginsWith(a)
