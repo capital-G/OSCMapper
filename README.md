@@ -2,8 +2,18 @@
 
 ![OSC Mapper logo](logo.png)
 
-An abstraction layer for OSC controllers and SuperCollider.
-Allows learning of controls and much more.
+A high level library to interact with SuperCollider via an OSC controller.
+Allows to use an OSC layout which is
+
+* pre-defined as preset (e.g. Mix 2 from TouchOSC)
+* custom defined as code
+* learned by modifying the controllers
+
+and use the values of the controller as
+
+* within a Synth as a `Bus` or a `Ndef`
+* within the language via `.value` or via a callback to controll e.g. effects
+* within a Pattern via `Pdefn`
 
 ## Installation
 
@@ -18,31 +28,9 @@ HelpBrowser.openHelpFor("Classes/OSCMapper");
 
 ## Quickstart
 
-### Learn OSC commands
+### Creating a layout
 
-Based on the input OSCMapper receives it will try to guess what kind of interface the address represents.
-
-```supercollider
-// turn OSC Mapper into learning mode
-OSCMapper.learn;
-// move (all) controllers
-// when finished create a new controller
-m = OSCMapper.finishLearn(\myController);
-
-// now we can simply use the controller values in an ndef
-(
-Ndef(\mySound, {
-    var sig = Saw.ar(LFDNoise1.kr(2.5!2).exprange(400, 410));
-    sig = sig * m['/1/fader1'].asNdef;
-    sig;
-}).play;
-)
-Ndef(\mySound).clear(1.0);
-```
-
-### Static layout
-
-If you want to establish a fixed layout you can also provide a static layout.
+You can either define the layout manually
 
 ```supercollider
 (
@@ -58,34 +46,71 @@ o = OSCMapper(\myLayout, (
         altName: \touchPanel
     ),
 ));
-
-Ndef(\mySound, {
-    SinOscFB.ar(
-        freq: LFDNoise1.kr(o[\fader1].asNdef!2).exprange(200, 400),
-        feedback: o[\touchPanel].x.asNdef,
-    ) * o[\touchPanel].y.asNdef;
-}).play;
-)
 ```
 
-### Use a preset
-
-If you use e.g. TouchOSC you can also easily use existing presets like this
+or use a preset like `Mix 2` from TouchOSC like
 
 ```supercollider
-o = OSCMapper.mix2;
+o = OSCMapper.mix2(\myLayout);
+```
 
+or learn a custom controller on the fly
+
+```supercollider
+OSCMapper.learn;
+// move controls
+o = OSCMapper.finishLearn(\myLayout);
+```
+
+### Using the controller within SuperCollider
+
+#### As Ndef
+
+```supercollider
+// the osc mapper we created earlier can also be accessed in def style
+o = OSCMapper(\myLayout);
+
+Ndef(\mySine, {SinOsc.ar!2 * o['/1/fader1'].asNdef}).play;
+
+Ndef(\mySine).clear(2);
+```
+
+#### As bus
+
+```supercollider
+// use the default synth
+s = Synth(\default);
+s.map(\amp, o['/1/fader1'].asBus);
+s.free;
+```
+
+#### In a pattern via Pdefn
+
+```supercollider
 (
-Ndef(\mySound, {
-    SinOscFB.ar(
-        freq: LFDNoise1.kr([
-            o['/3/xy2'].x.asNdef,
-            o['/3/xy2'].y.asNdef 
-        ]).exprange(200, 600),
-        feedback: o['/3/xy1'].x.asNdef,
-    ) * o['/3/xy1'].y.asNdef;
-}).play;
+p = Pbind(
+    \instrument, \default,
+    \dur, 0.5,
+    \degree, Pxrand((0..10), inf),
+    \amp, o['/1/fader1'].asPdefn,
+).play;
 )
+
+p.stop;
+```
+
+#### As raw value access
+
+```supercollider
+o['/1/fader1'].value;
+```
+
+#### Add a callback on change
+
+```supercollider
+o['/1/fader1'].callback = {|v| "value is now %".format(v).postln};
+// and free the callback
+o['/1/fader1'].callback = {};
 ```
 
 ## License
