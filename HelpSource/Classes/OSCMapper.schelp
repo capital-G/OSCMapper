@@ -58,7 +58,7 @@ Ndef(\mySine).clear(2);
 code::
 // use the default synth
 s = Synth(\default);
-s.map(\amp, o['/1/fader1']);
+s.map(\amp, o['/1/fader1'].asBus);
 s.free;
 ::
 
