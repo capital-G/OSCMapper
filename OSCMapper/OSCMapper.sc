@@ -46,7 +46,7 @@ OSCMapperElement {
 
 	asNdef {
 		ndef = ndef ? Ndef(name.asSymbol, {
-			\val.kr(0.0, lag: \lag.kr(lag))
+			\val.kr(value, lag: \lag.kr(lag))
 		});
 		^ndef;
 	}
@@ -56,11 +56,12 @@ OSCMapperElement {
 			server: Server.default,
 			numChannels: 1
 		);
+		bus.set(value);
 		^bus;
 	}
 
 	asPdefn {
-		pdefn = pdefn ? Pdefn(name.asSymbol, 0.0);
+		pdefn = pdefn ? Pdefn(name.asSymbol, value);
 		^pdefn;
 	}
 
